@@ -14,54 +14,58 @@ class GildedRose {
 
     public void updateQuality() {
         for (Item item : items) {
+            updateItem(item);
+        }
+    }
 
-            if (!isAgedBrie(item)
-                    && !isBackstagePass(item)) {
+    private void updateItem(Item item) {
+        // Sulfuras never changes, including its SellIn value.
+        if (isSulfuras(item)) {
+            return;
+        }
 
-                if (!isSulfuras(item)) {
-                    decreaseQuality(item);
-                }
+        if (isAgedBrie(item)) {
+            updateAgedBrie(item);
+        } else if (isBackstagePass(item)) {
+            updateBackstagePass(item);
+        } else {
+            updateNormalItem(item);
+        }
 
-            } else {
+        item.sellIn--;
+    }
 
-                if (item.quality < 50) {
-                    increaseQuality(item);
+    private void updateNormalItem(Item item) {
+        decreaseQuality(item);
 
-                    if (isBackstagePass(item)) {
+        // SellIn is reduced afterwards, so zero means the item expires today.
+        if (item.sellIn <= 0) {
+            decreaseQuality(item);
+        }
+    }
 
-                        if (item.sellIn < 11) {
-                            increaseQuality(item);
-                        }
+    private void updateAgedBrie(Item item) {
+        increaseQuality(item);
 
-                        if (item.sellIn < 6) {
-                            increaseQuality(item);
-                        }
-                    }
-                }
-            }
+        if (item.sellIn <= 0) {
+            increaseQuality(item);
+        }
+    }
 
-            if (!isSulfuras(item)) {
-                item.sellIn = item.sellIn - 1;
-            }
+    private void updateBackstagePass(Item item) {
+        if (item.sellIn <= 0) {
+            item.quality = 0;
+            return;
+        }
 
-            if (item.sellIn < 0) {
+        increaseQuality(item);
 
-                if (!isAgedBrie(item)) {
+        if (item.sellIn <= 10) {
+            increaseQuality(item);
+        }
 
-                    if (!isBackstagePass(item)) {
-
-                        if (!isSulfuras(item)) {
-                            decreaseQuality(item);
-                        }
-
-                    } else {
-                        item.quality = item.quality - item.quality;
-                    }
-
-                } else {
-                    increaseQuality(item);
-                }
-            }
+        if (item.sellIn <= 5) {
+            increaseQuality(item);
         }
     }
 
