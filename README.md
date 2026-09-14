@@ -1,30 +1,40 @@
-# Gilded Rose starting position in Java
+# Gilded Rose Refactoring Kata
 
-## Run the TextTest Fixture from Command-Line
+This is my Java solution for the Gilded Rose Refactoring Kata.
 
-```
-./gradlew -q text
-```
+The task was to take the existing code, make it easier to understand and change without breaking the current behaviour, and then add support for Conjured items based on the requirements.
 
-### Specify Number of Days
+I completed this task with incremental steps, with each stage committed separately.
 
-For e.g. 10 days:
+## Approach
 
-```
-./gradlew -q text --args 10
-```
+1. Added tests for the existing behaviour before changing the production code.
+2. Simplified the main item loop and replaced repeated item names with constants.
+3. Moved repeated checks and Quality updates into small helper methods.
+4. Split the update logic by item type so the rules were easier to follow.
+5. Added tests for Conjured items and then implemented the new behaviour.
+6. Ran the full test suite after each step to make sure the existing behaviour still worked as expected.
+7. Updated the README file.
 
-You should make sure the gradle commands shown above work when you execute them in a terminal before trying to use TextTest (see below).
+The commit history follows the same progression.
 
+## Tests
 
-## Run the TextTest approval test that comes with this project
+There are 18 tests in total.
 
-There are instructions in the [TextTest Readme](../texttests/README.md) for setting up TextTest. What's unusual for the Java version is there are two executables listed in [config.gr](../texttests/config.gr) for Java. The first uses Gradle wrapped in a python script. Uncomment these lines to use it:
+1. Normal items: Quality changes before and after the sell-by date, including the zero limit.
+2. Aged Brie: Quality increases over time and does not go above 50.
+3. Backstage passes: covers the 10-day and 5-day rules, as well as what happens after the concert.
+4. Sulfuras: confirms that `SellIn` and `Quality` stay unchanged.
+5. Conjured items: covers the faster Quality reduction before and after the sell-by date, while still stopping at zero.
 
-    executable:${TEXTTEST_HOME}/Java/texttest_rig.py
-    interpreter:python
+## Tools
 
-The other relies on your CLASSPATH being set correctly in [environment.gr](../texttests/environment.gr). Uncomment these lines to use it instead:
+I used Java, Maven, JUnit 5 and Cursor IDE.
 
-    executable:com.gildedrose.TexttestFixture
-    interpreter:java
+I used Cursor's autocomplete and suggestions where useful, while working through the requirements, tests and refactoring step by step and reviewing the changes as I went.
+
+## Running the tests
+
+```bash
+mvn test
