@@ -7,10 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class GildedRoseTest {
 
     private static final String AGED_BRIE = "Aged Brie";
-    private static final String BACKSTAGE_PASS =
-            "Backstage passes to a TAFKAL80ETC concert";
-    private static final String SULFURAS =
-            "Sulfuras, Hand of Ragnaros";
+    private static final String BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert";
+    private static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
 
     @Test
     void normalItemDecreasesQualityByOne() {
@@ -220,5 +218,47 @@ class GildedRoseTest {
 
         assertEquals(5, items[0].sellIn);
         assertEquals(80, items[0].quality);
+    }
+
+    @Test
+    void conjuredItemDecreasesQualityByTwo() {
+        // Conjured items degrade twice as fast as normal items.
+        Item[] items = {
+                new Item("Conjured Item", 5, 10)
+        };
+        GildedRose app = new GildedRose(items);
+
+        app.updateQuality();
+
+        assertEquals(4, items[0].sellIn);
+        assertEquals(8, items[0].quality);
+    }
+
+    @Test
+    void expiredConjuredItemDecreasesQualityByFour() {
+        // Expired Conjured items lose 4 Quality, twice the rate of expired normal items.
+        Item[] items = {
+                new Item("Conjured Item", 0, 10)
+        };
+        GildedRose app = new GildedRose(items);
+
+        app.updateQuality();
+
+        assertEquals(-1, items[0].sellIn);
+        assertEquals(6, items[0].quality);
+    }
+
+    @Test
+    void conjuredItemQualityDoesNotGoBelowZero() {
+        // Conjured Quality must still stop at zero.
+        Item[] items = {
+                new Item("Conjured Item", 5, 1)
+        };
+        GildedRose app = new GildedRose(items);
+
+        app.updateQuality();
+
+        assertEquals(4, items[0].sellIn);
+        assertEquals(0, items[0].quality);
     }
 }

@@ -5,6 +5,7 @@ class GildedRose {
     private static final String AGED_BRIE = "Aged Brie";
     private static final String BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert";
     private static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
+    private static final String CONJURED = "Conjured";
 
     Item[] items;
 
@@ -28,6 +29,8 @@ class GildedRose {
             updateAgedBrie(item);
         } else if (isBackstagePass(item)) {
             updateBackstagePass(item);
+        } else if (isConjured(item)) {
+            updateConjuredItem(item);
         } else {
             updateNormalItem(item);
         }
@@ -69,6 +72,17 @@ class GildedRose {
         }
     }
 
+    private void updateConjuredItem(Item item) {
+        // Conjured items degrade twice as fast as normal items.
+        decreaseQuality(item);
+        decreaseQuality(item);
+
+        if (item.sellIn <= 0) {
+            decreaseQuality(item);
+            decreaseQuality(item);
+        }
+    }
+
     private boolean isSulfuras(Item item) {
         return SULFURAS.equals(item.name);
     }
@@ -79,6 +93,10 @@ class GildedRose {
 
     private boolean isBackstagePass(Item item) {
         return BACKSTAGE_PASS.equals(item.name);
+    }
+
+    private boolean isConjured(Item item) {
+        return item.name.startsWith(CONJURED);
     }
 
     private void increaseQuality(Item item) {
